@@ -11,13 +11,15 @@ import 'package:wapar/screens/home_screen.dart';
 import 'package:wapar/widgets/singal_product.dart';
 
 class CategoryScreen extends StatelessWidget {
+  var formatted;
+  CategoryScreen({this.formatted});
   @override
   Widget build(BuildContext context) {
     CategoriesProvider myProvider;
     myProvider = Provider.of<CategoriesProvider>(context);
 
     List<ProductModel> categoryLists = myProvider.categoryList;
-    String formatted;
+  
 
     return Scaffold(
       appBar: AppBar(
@@ -53,13 +55,13 @@ class CategoryScreen extends StatelessWidget {
             padding: EdgeInsets.only(top: 8),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.68,
+              childAspectRatio: 0.74,
+              crossAxisSpacing: 10,
+              mainAxisExtent: 10
             ),
             itemCount: categoryLists.length,
             itemBuilder: (context, index) {
-              Timestamp timeStamp = categoryLists[index].productTime;
-              var nowTime = timeStamp.millisecondsSinceEpoch;
-              formatted = formatTime(nowTime);
+           
               return SingalProduct(
                 singalProductImage:
                     categoryLists[index].productImage,

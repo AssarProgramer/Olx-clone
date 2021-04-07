@@ -11,7 +11,8 @@ class ProductModel {
   final String productPhoneNumber;
   final String productType;
   final String productPrice;
-  final Timestamp productTime;
+   var productTime;
+   final String userName;
   final String productImage;
 
   var userId;
@@ -22,6 +23,7 @@ class ProductModel {
     @required this.productImage,
     @required this.productTime,
     @required this.productType,
+    @required this.userName,
     @required this.productName,
     @required this.productAddress,
     @required this.productCompany,

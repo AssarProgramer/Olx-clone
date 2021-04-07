@@ -11,7 +11,7 @@ class MyButton extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 55,
-      child: RaisedButton(
+      child: MaterialButton(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
           10,

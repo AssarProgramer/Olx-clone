@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wapar/drawer_side/admin/add_product.dart';
-import 'package:wapar/drawer_side/admin/delete_product.dart';
-import 'package:wapar/drawer_side/admin/edit_product.dart';
+import 'package:wapar/post/add_product.dart';
+import 'package:wapar/post/delete_product.dart';
+import 'package:wapar/post/edit_product.dart';
 import 'package:wapar/model/product_model.dart';
 import 'package:wapar/model/user_,model.dart';
 import 'package:wapar/screens/home_screen.dart';
@@ -22,29 +22,21 @@ class AdminScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => HomeScreen(),
-                ),
-              );
-            },
-          ),
-          title: Text('Admin'),
+        
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text('POST'),
           centerTitle: true,
           elevation: 0.0,
           bottom: TabBar(
             tabs: [
               Tab(
-                icon: Text('ADD')
+                icon: Text('Add Post')
               ),
               Tab(
-                icon:Text('EDIT')
+                icon:Text('Edit Post')
               ),
               Tab(
-                icon:Text('DELETE')
+                icon:Text('Delete Post')
               ),
             ],
           ),

@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "364610148410",
-    "project_id": "wapar-be8d6",
-    "storage_bucket": "wapar-be8d6.appspot.com"
+    "project_number": "1014107526067",
+    "project_id": "wapar-fc3a9",
+    "storage_bucket": "wapar-fc3a9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:364610148410:android:456198cd503cba74697d03",
+        "mobilesdk_app_id": "1:1014107526067:android:772298171940168f9371c6",
         "android_client_info": {
           "package_name": "com.fish.wapar"
         }
       },
       "oauth_client": [
         {
-          "client_id": "364610148410-f9nlb68jk3k3jn38q7kd6s4shre7fbpc.apps.googleusercontent.com",
+          "client_id": "1014107526067-psgihug525nhtsh63r7h6g8up7cn3kkp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDT0tqe0GY1tJgzn-Q_m-q_9iKCwEZk2hc"
+          "current_key": "AIzaSyB7rwQx7NdBQ6HCi0qrjMYG_nbypEBIEQw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "364610148410-f9nlb68jk3k3jn38q7kd6s4shre7fbpc.apps.googleusercontent.com",
+              "client_id": "1014107526067-psgihug525nhtsh63r7h6g8up7cn3kkp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

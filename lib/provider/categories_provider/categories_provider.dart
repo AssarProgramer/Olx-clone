@@ -15,6 +15,7 @@ class CategoriesProvider with ChangeNotifier {
       (categorySnapShot) {
         if (categorySnapShot.data()["productCategory"] == category) {
           productModel = ProductModel(
+            userName:  categorySnapShot.data()['userName'],
             productId: categorySnapShot.data()['productId'],
             userId: categorySnapShot.data()['userId'],
             productImagePath: categorySnapShot.data()["productImagePath"],

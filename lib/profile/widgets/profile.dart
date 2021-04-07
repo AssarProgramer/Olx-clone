@@ -13,7 +13,8 @@ class Profile extends StatelessWidget {
       flex: 2,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: ListView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ContainerTextField(
               title: currentUser.userFullName,
@@ -21,14 +22,9 @@ class Profile extends StatelessWidget {
             ContainerTextField(
               title: currentUser.userEmail,
             ),
-            // ContainerTextField(
-            //   title: currentUser.userPassword,
-            // ),
             ContainerTextField(
-              title: currentUser.userPhoneNumber,
-            ),
-            ContainerTextField(
-              title: currentUser.userFullAddress,
+            
+              title: currentUser.userPassword,
             ),
             SizedBox(
               height: 20,

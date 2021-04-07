@@ -2,9 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.fish.wapar">
    
-   <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" tools:node="remove"/>
-   <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" tools:node="remove"/>
+   <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE"/>
+   <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE"/>
    <uses-permission android:name="android.permission.CAMERA" tools:node="remove"/>
+   <uses-permission android:name="android.permission.INTERNET" />
+   <uses-permission android:name="android.hardware.camera.autofocus"/>
+   <uses-permission android:name="android.permission.WAKE_LOCK"/>
+   <uses-permission android:name="android.permission.ACCESS_FILE_LOCATION"/>
    <application
         android:label="wapar"
         android:icon="@mipmap/ic_launcher">
@@ -15,6 +19,7 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
+            <!-- tools:node="remove" -->
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues

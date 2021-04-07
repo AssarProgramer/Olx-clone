@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wapar/auths/sign_in.dart';
+import 'package:wapar/auths/sign_up.dart';
 import 'package:wapar/provider/auth_provider/auth_provider.dart';
 import 'package:wapar/provider/categories_provider/categories_provider.dart';
 import 'package:wapar/provider/product_provider/my_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:wapar/provider/profile_provider/profile_provider.dart';
 import 'package:wapar/screens/home_screen.dart';
-import 'package:wapar/auths/login_screen.dart';
 
 const bool debugEnableDeviceSimulator = true;
 
@@ -37,14 +38,14 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer(builder: (context, MyProvider myModel, child) {
         return MaterialApp(
-          theme: myModel.darkTheme ? MyProvider.dark : MyProvider.light,
+          theme: MyProvider.light,
           debugShowCheckedModeBanner: false,
           home: StreamBuilder(
             builder: (context, snapShot) {
               if (snapShot.hasData) {
                 return HomeScreen();
               }
-              return LoginScreen();
+              return SignIn();
             },
             stream: FirebaseAuth.instance.authStateChanges(),
           ),

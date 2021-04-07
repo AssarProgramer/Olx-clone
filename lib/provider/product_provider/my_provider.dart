@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wapar/model/product_model.dart';
 import 'package:wapar/model/user_,model.dart';
@@ -12,6 +13,7 @@ class MyProvider with ChangeNotifier {
   List<ProductModel> productModelList = [];
   List<ProductModel> categoryList = [];
   Future<void> addProduct({
+    String userName,
     String pathImage,
     String productName,
     String productDescription,
@@ -44,8 +46,9 @@ class MyProvider with ChangeNotifier {
           'productAddress': productAddress,
           'productPhoneNumber': productPhoneNumber,
           'productDescription': productDescription,
-          'productTime': DateTime.now(),
+          'productTime': DateTime.now().millisecondsSinceEpoch.toString(),
           'productImage': productImage,
+          'userName': userName,
         },
       );
       notifyListeners();
@@ -70,6 +73,7 @@ class MyProvider with ChangeNotifier {
     String productPrice,
     String productImage,
     String productId,
+    String userName,
   }) async {
     var user = FirebaseAuth.instance.currentUser;
     try {
@@ -89,8 +93,9 @@ class MyProvider with ChangeNotifier {
           'productAddress': productAddress,
           'productPhoneNumber': productPhoneNumber,
           'productDescription': productDescription,
-          'productTime': DateTime.now(),
+          'productTime': DateTime.now().millisecondsSinceEpoch.toString(),
           'productImage': productImage,
+          'userName': userName,
         },
       );
       notifyListeners();
@@ -103,8 +108,10 @@ class MyProvider with ChangeNotifier {
 
   getProductData() async {
     List<ProductModel> newList = [];
-    QuerySnapshot productData =
-        await FirebaseFirestore.instance.collection('Product').get();
+    QuerySnapshot productData = await FirebaseFirestore.instance
+        .collection('Product')
+        .orderBy('productId', descending: true,)
+        .get();
     productData.docs.forEach(
       (categorySnapShot) {
         productModel = ProductModel(
@@ -121,6 +128,7 @@ class MyProvider with ChangeNotifier {
           productPrice: categorySnapShot.data()['productPrice'],
           productTime: categorySnapShot.data()['productTime'],
           productImage: categorySnapShot.data()['productImage'],
+          userName: categorySnapShot.data()['userName'],
         );
         newList.add(productModel);
       },
@@ -142,19 +150,27 @@ class MyProvider with ChangeNotifier {
     notifyListeners();
     return;
   }
+
   User user;
   Future<void> deleteImage(String imageFileUrl) async {
-    FirebaseStorage.instance
+    Reference storageReference = FirebaseStorage.instance
         .ref()
-        .child("product_image")
-        .child(
-          imageFileUrl + ".jpg",
-        )
-        .delete()
-        .then(
-          (value) => print("Yes its Delete "),
-        );
+        .child('product_image')
+        .child(imageFileUrl);
+    await storageReference.delete();
+
+    //  await FirebaseStorage.instance
+    //       .ref()
+    //       .child("product_image")
+    //       .child(
+    //         imageFileUrl+".jpg'",
+    //       )
+    //       .delete()
+    //       .then(
+    //         (value) => print("Yes its Delete "),
+    //       );
   }
+
   List<ProductModel> productSearch(String query) {
     List<ProductModel> productSearch = productModelList.where(
       (element) {
@@ -164,45 +180,48 @@ class MyProvider with ChangeNotifier {
     ).toList();
     return productSearch;
   }
-  static ThemeData dark = ThemeData(
-    accentColor: Colors.white,
-    scaffoldBackgroundColor: Colors.black,
-    brightness: Brightness.dark,
-    primaryColor: Colors.black,
-  );
+
+  // var color = const Color(0xFFB74093);
+
+  // static ThemeData dark = ThemeData(
+  //   accentColor: Color(0xff0056fe),
+  //   scaffoldBackgroundColor: Colors.black,
+  //   brightness: Brightness.dark,
+  //   primaryColor: Colors.black,
+  // );
   static ThemeData light = ThemeData(
-    accentColor: Colors.black,
+    accentColor: Color(0xff479ddb),
+    scaffoldBackgroundColor: HexColor('eff4ff'),
     brightness: Brightness.light,
-    primaryColor: Colors.white,
+    primaryColor: HexColor('#eff4ff'),
   );
- final String key = "theme";
-  SharedPreferences _prefs;
-  bool _darkTheme;
+  // final String key = "theme";
+  // SharedPreferences _prefs;
+  // bool _darkTheme;
 
-  bool get darkTheme => _darkTheme;
+  // bool get darkTheme => _darkTheme;
 
-  MyProvider() {
-    _darkTheme = true;
-    _loadFromPrefs();
-  }
+  // MyProvider() {
+  //   _darkTheme = true;
+  //   _loadFromPrefs();
+  // }
 
-  toggleTheme() {
-    _darkTheme = !_darkTheme;
-    _saveToPrefs();
-  }
+  // toggleTheme() {
+  //   _darkTheme = !_darkTheme;
+  //   _saveToPrefs();
+  // }
 
-  _initPrefs() async {
-    if (_prefs == null) _prefs = await SharedPreferences.getInstance();
-  }
+  // _initPrefs() async {
+  //   if (_prefs == null) _prefs = await SharedPreferences.getInstance();
+  // }
 
-  _loadFromPrefs() async {
-    await _initPrefs();
-    _darkTheme = _prefs.getBool(key) ?? true;
-  }
+  // _loadFromPrefs() async {
+  //   await _initPrefs();
+  //   _darkTheme = _prefs.getBool(key) ?? true;
+  // }
 
-  _saveToPrefs() async {
-    await _initPrefs();
-    _prefs.setBool(key, _darkTheme);
-  }
-
+  // _saveToPrefs() async {
+  //   await _initPrefs();
+  //   _prefs.setBool(key, _darkTheme);
+  // }
 }

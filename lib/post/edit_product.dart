@@ -1,14 +1,18 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:clay_containers/widgets/clay_container.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:wapar/config/colors.dart';
 import 'package:wapar/model/product_model.dart';
 import 'package:wapar/provider/product_provider/my_provider.dart';
 import 'package:wapar/screens/home_screen.dart';
-import 'package:wapar/widgets/my_button.dart';
-import 'package:wapar/widgets/my_text_field.dart';
+import 'package:wapar/widgets/costom_button.dart';
+import 'package:wapar/widgets/costom_text_field.dart';
 
 class EditProductScreen extends StatefulWidget {
   final ProductModel productModel;
@@ -76,9 +80,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _imagePath = widget.productModel.productImagePath;
   }
 
-  var imageMap;
-
-
 
   void toggleProductType() {
     setState(() {
@@ -101,7 +102,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         productModel &&
         productPhoneNumber &&
         productCompany) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("All Fields are Empty"),
@@ -111,7 +112,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (productName) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Product Name is Empty"),
@@ -120,7 +121,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     if (_productName.text.length >= 13) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Name must be 12 characters"),
@@ -130,7 +131,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (productCompany) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Product Company is Empty"),
@@ -140,7 +141,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (_productCompany.text.length >= 13) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Company must be 12 characters"),
@@ -150,7 +151,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (productModel) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Product Model is Empty"),
@@ -160,7 +161,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (_productModel.text.length >= 13) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Model must be 12 characters"),
@@ -170,7 +171,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (productPrice) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Product Price is Empty"),
@@ -180,7 +181,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (!priceRegix.hasMatch(_productPrice.text)) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Price must be Numbers"),
@@ -190,7 +191,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (productAddress) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Product Address is Empty"),
@@ -200,7 +201,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (_productAddress.text.length >= 25) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Address must be 24 characters"),
@@ -210,7 +211,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (productDescription) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Product Description is Empty"),
@@ -220,7 +221,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (productPhoneNumber) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Phone Number is Empty"),
@@ -230,7 +231,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     if (!phoneRegix.hasMatch(_productPhoneNumber.text)) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).errorColor,
           content: Text("Phone Number must be 11 numbers"),
@@ -242,7 +243,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   Future imagePicker({ImageSource source}) async {
-    PickedFile imagePicked = await ImagePicker().getImage(source: source);
+    PickedFile imagePicked = await ImagePicker().getImage(
+      source: source,
+      imageQuality: 30,
+    );
     setState(() {
       _image = File(imagePicked.path);
     });
@@ -253,64 +257,67 @@ class _EditProductScreenState extends State<EditProductScreen> {
       onTap: () {
         toggleProductType();
       },
-      child: Container(
-        padding: EdgeInsets.only(left: 10, top: 15),
-        margin: EdgeInsets.symmetric(vertical: 7),
-        height: 58,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.grey,
+      child: ClayContainer(
+        borderRadius: 30,
+        spread: 1,
+        emboss: true,
+        color: Theme.of(context).primaryColor,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              // border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(30)),
+          padding: EdgeInsets.only(left: 10, top: 15),
+          height: height / 12,
+          width: double.infinity,
+          child: Text(
+            _productType,
+            style: TextStyle(fontSize: 16, color: textsColor),
           ),
-          color: Theme.of(context).primaryColor,
-        ),
-        child: Text(
-          _productType,
-          style: TextStyle(fontSize: 16, color: Theme.of(context).accentColor),
         ),
       ),
     );
   }
 
-var alert;
+  var alert;
   Widget productImage(context) {
     return GestureDetector(
       onTap: () {
-         BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                child: alert = AlertDialog(
-                  title: new Text(
-                    "SELECT",
-                  ),
-                  content: new Text(
-                    "your choice",
-                  ),
-                  actions: <Widget>[
-                    new MaterialButton(
-                      child: new Text("Gallery"),
-                      onPressed: () async {
-                        await imagePicker(source: ImageSource.gallery);
-                        Navigator.pop(context);
-                      },
-                    ),
-                    new MaterialButton(
-                      child: Text("Camera"),
-                      onPressed: () async {
-                        await imagePicker(source: ImageSource.camera);
-                        Navigator.pop(context);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                ),
-              );
-
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return alert;
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+          child: alert = AlertDialog(
+            title: new Text(
+              "SELECT",
+            ),
+            content: new Text(
+              "your choice",
+            ),
+            actions: <Widget>[
+              new MaterialButton(
+                child: new Text("Gallery"),
+                onPressed: () async {
+                  await imagePicker(source: ImageSource.gallery);
+                  Navigator.pop(context);
                 },
-              );
+              ),
+              new MaterialButton(
+                child: Text("Camera"),
+                onPressed: () async {
+                  await imagePicker(source: ImageSource.camera);
+                  Navigator.pop(context);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
@@ -332,55 +339,49 @@ var alert;
   Widget editProduct(context) {
     return ListView(
       children: [
-        MyTextField(
-          hitText: 'Product Name',
+        CostomTextField(
           controller: _productName,
-          obscureText: false,
+          passwordShot: false,
+          hitText: 'Product Name',
         ),
-        MyTextField(
+        CostomTextField(
           hitText: 'Product Company',
           controller: _productCompany,
-          obscureText: false,
+          passwordShot: false,
         ),
-        MyTextField(
+        CostomTextField(
           hitText: 'Product Model',
           controller: _productModel,
-          obscureText: false,
+          passwordShot: false,
         ),
-        MyTextField(
+        CostomTextField(
           hitText: 'Product Price',
           controller: _productPrice,
-          obscureText: false,
+          keybord: TextInputType.phone,
+          passwordShot: false,
         ),
         usedNew(context),
-        MyTextField(
+        CostomTextField(
           hitText: 'Product Address',
           controller: _productAddress,
-          obscureText: false,
+          passwordShot: false,
         ),
-        MyTextField(
+        CostomTextField(
           hitText: 'Product Description',
           controller: _productDescription,
-          obscureText: false,
+          passwordShot: false,
         ),
-        MyTextField(
+        CostomTextField(
           hitText: 'Phone Number',
+          keybord: TextInputType.phone,
+          inputFormatter: [
+            LengthLimitingTextInputFormatter(11),
+            FilteringTextInputFormatter.digitsOnly
+          ],
           controller: _productPhoneNumber,
-          obscureText: false,
+          passwordShot: false,
         ),
         productImage(context),
-        isLoading == false
-            ? MyButton(
-                name: 'Submint',
-                onPressed: () {
-                  checkValid(context);
-                },
-              )
-            : Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.red,
-                ),
-              ),
       ],
     );
   }
@@ -420,9 +421,14 @@ var alert;
           }),
         },
       );
+    } else {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
+ 
   @override
   build(BuildContext context) {
     myProvider = Provider.of<MyProvider>(context);
@@ -431,23 +437,38 @@ var alert;
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     size = MediaQuery.of(context).size;
-
     return Scaffold(
-      key: scaffoldKey,
-      body: Form(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: widget.productModel != null
-              ? editProduct(context)
-              : Center(
-                  child: Text(
-                    'No Data',
-                    style: TextStyle(
-                        color: Theme.of(context).accentColor, fontSize: 20),
-                  ),
-                ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+        child: CostomButton(
+          title: 'Submit',
+          onTap: () {
+            checkValid(context);
+          },
         ),
       ),
+      key: scaffoldKey,
+      body: isLoading == false
+          ? Form(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: widget.productModel != null
+                    ? editProduct(context)
+                    : Center(
+                        child: Text(
+                          'No Data',
+                          style: TextStyle(
+                              color: Theme.of(context).accentColor,
+                              fontSize: 20),
+                        ),
+                      ),
+              ),
+            )
+          : Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.red,
+              ),
+            ),
     );
   }
 }

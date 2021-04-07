@@ -1,9 +1,10 @@
 import 'dart:ui';
 
+import 'package:clay_containers/clay_containers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wapar/drawer_side/admin/admin_screen.dart';
+import 'package:wapar/post/admin_screen.dart';
 import 'package:wapar/model/product_model.dart';
 import 'package:wapar/provider/product_provider/my_provider.dart';
 import 'package:wapar/screens/home_screen.dart';
@@ -24,17 +25,24 @@ class _DeleteProductScreenState extends State<DeleteProductScreen> {
   Widget fristExpanded(ctx, index) {
     return Expanded(
       flex: 2,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 5),
+      child: ClayContainer(
+        color: Theme.of(context).primaryColor,
         width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          color: Theme.of(ctx).primaryColor,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: fristExpanedColumn(
-          ctx,
-          index,
+        depth: 40,
+        spread: 3,
+        borderRadius: 5,
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: Theme.of(ctx).primaryColor,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: fristExpanedColumn(
+            ctx,
+            index,
+          ),
         ),
       ),
     );
@@ -106,94 +114,104 @@ class _DeleteProductScreenState extends State<DeleteProductScreen> {
     var alert;
     return Expanded(
       flex: 1,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 5),
-        height: double.infinity,
-        decoration: BoxDecoration(
-          color: Theme.of(ctx).accentColor,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.create, color: Colors.grey),
-              onPressed: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      ProductModel productModel = ProductModel(
-                        productId: productList[index].productId,
-                        userId: productList[index].userId,
-                        productImagePath: productList[index].productImagePath,
-                        productImage: productList[index].productImage,
-                        productTime: productList[index].productTime,
-                        productType: productList[index].productType,
-                        productName: productList[index].productName,
-                        productAddress: productList[index].productAddress,
-                        productCompany: productList[index].productCompany,
-                        productDescription:
-                            productList[index].productDescription,
-                        productModel: productList[index].productModel,
-                        productPhoneNumber:
-                            productList[index].productPhoneNumber,
-                        productPrice: productList[index].productPrice,
-                      );
-                      return AdminScreen(
-                        productModel,
-                        1,
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.delete_forever,
-                color: Colors.red,
+      child: ClayContainer(
+        color: Theme.of(context).accentColor,
+        width: double.infinity,
+        depth: 40,
+        spread: 1,
+        borderRadius: 5,
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: Theme.of(ctx).accentColor,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.create, color: Theme.of(context).primaryColor),
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        ProductModel productModel = ProductModel(
+                          
+                          productId: productList[index].productId,
+                          userId: productList[index].userId,
+                          productImagePath: productList[index].productImagePath,
+                          productImage: productList[index].productImage,
+                          productTime: productList[index].productTime,
+                          productType: productList[index].productType,
+                          productName: productList[index].productName,
+                          productAddress: productList[index].productAddress,
+                          productCompany: productList[index].productCompany,
+                          productDescription:
+                              productList[index].productDescription,
+                          productModel: productList[index].productModel,
+                          productPhoneNumber:
+                              productList[index].productPhoneNumber,
+                          productPrice: productList[index].productPrice,
+                        );
+                        return AdminScreen(
+                          productModel,
+                          1,
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
-              onPressed: () {
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                  child: alert = AlertDialog(
-                    title: new Text(
-                      "SELECT",
-                    ),
-                    content: new Text(
-                      "your choice",
-                    ),
-                    actions: <Widget>[
-                      new TextButton(
-                        child: new Text("Cancel"),
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                        },
+              IconButton(
+                icon: Icon(Icons.delete_forever,
+                    color: Theme.of(context).primaryColor),
+                onPressed: () {
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                    child: alert = AlertDialog(
+                      title: new Text(
+                        "SELECT",
                       ),
-                      new TextButton(
-                        child: Text("Delete"),
-                        onPressed: () async {
-                          myProvider.deleteProduct(productList[index].productId, productList[index].productImagePath);
-
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => HomeScreen(),
-                            ),
-                          );
-                        },
+                      content: new Text(
+                        "your choice",
                       ),
-                    ],
-                  ),
-                );
+                      actions: <Widget>[
+                        new TextButton(
+                          child: new Text("Cancel"),
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        new TextButton(
+                          child: Text("Delete"),
+                          onPressed: () async {
+                            myProvider.deleteProduct(
+                                productList[index].productId,
+                                productList[index].productImagePath
+                                
+                                );
 
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return alert;
-                  },
-                );
-              },
-            ),
-          ],
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

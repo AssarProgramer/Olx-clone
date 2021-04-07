@@ -53,7 +53,7 @@ class ProductSearch extends SearchDelegate<ProductModel> {
 
     return GridView.count(
         crossAxisCount: 2,
-        childAspectRatio: 0.68,
+        childAspectRatio: 0.74,
         crossAxisSpacing: 10,
         padding: EdgeInsets.only(top: 10),
         children: _productSearch.map<Widget>(
@@ -68,6 +68,7 @@ class ProductSearch extends SearchDelegate<ProductModel> {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => DetileScreen(
+                      userName: e.userName,
                       productTime: formatted,
                       productImage: e.productImage,
                       productType: e.productType,
@@ -95,7 +96,7 @@ class ProductSearch extends SearchDelegate<ProductModel> {
 
     return GridView.count(
         crossAxisCount: 2,
-        childAspectRatio: 0.68,
+        childAspectRatio: 0.74,
         crossAxisSpacing: 5,
         mainAxisSpacing: 5,
         children: _productSearch.map<Widget>(
@@ -106,10 +107,12 @@ class ProductSearch extends SearchDelegate<ProductModel> {
               singalProductTime: formatted,
               singalProductPrice: e.productPrice,
               singalProductType: e.productType,
+
               onTap: () {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => DetileScreen(
+                      userName:  e.userName,
                       productTime: formatted,
                       productImage: e.productImage,
                       productType: e.productType,

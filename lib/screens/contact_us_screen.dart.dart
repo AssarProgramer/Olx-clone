@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wapar/screens/home_screen.dart';
-import 'package:wapar/widgets/contact_text_field.dart';
-import 'package:wapar/widgets/my_text_field.dart';
+
 
 class ContactUsScreen extends StatefulWidget {
   @override
@@ -113,21 +112,21 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
             padding: const EdgeInsets.only(top: 30),
             child: Column(
               children: [
-                MyTextField(
-                  controller: yourName,
-                  hitText: 'Your Name',
-                  obscureText: false,
-                ),
-                MyTextField(
-                  controller: yourEmail,
-                  hitText: 'Your Email',
-                  obscureText: false,
-                ),
-                ContactTextField(
-                  controller: sendYourMessage,
-                  hitText: 'Send Mail',
-                  maxlines: 20,
-                ),
+                // MyTextField(
+                //   controller: yourName,
+                //   hitText: 'Your Name',
+                //   obscureText: false,
+                // ),
+                // MyTextField(
+                //   controller: yourEmail,
+                //   hitText: 'Your Email',
+                //   obscureText: false,
+                // ),
+                // ContactTextField(
+                //   controller: sendYourMessage,
+                //   hitText: 'Send Mail',
+                //   maxlines: 20,
+                // ),
               ],
             ),
           ),

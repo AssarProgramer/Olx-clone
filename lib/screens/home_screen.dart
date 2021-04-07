@@ -1,16 +1,16 @@
+import 'package:clay_containers/clay_containers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:intl/intl.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:time_formatter/time_formatter.dart';
-import 'package:wapar/drawer_side/admin/admin_screen.dart';
-import 'package:wapar/drawer_side/profile_screen.dart';
+import 'package:wapar/auths/sign_in.dart';
+import 'package:wapar/post/admin_screen.dart';
+import 'package:wapar/profile/profile_screen.dart';
 import 'package:wapar/model/product_model.dart';
 import 'package:wapar/model/user_,model.dart';
+import 'package:wapar/profile/widgets/profile_edit.dart';
 import 'package:wapar/provider/categories_provider/categories_provider.dart';
 import 'package:wapar/provider/product_provider/my_provider.dart';
 import 'package:wapar/provider/profile_provider/profile_provider.dart';
@@ -18,9 +18,9 @@ import 'package:wapar/screens/about.dart';
 import 'package:wapar/screens/categorys_screen.dart';
 import 'package:wapar/screens/contact_us_screen.dart.dart';
 import 'package:wapar/screens/detile_screen.dart';
-import 'package:wapar/auths/login_screen.dart';
 import 'package:wapar/screens/product_Search.dart';
 import 'package:wapar/widgets/singal_product.dart';
+import 'package:intl/intl.dart';
 
 enum category {
   mobile,
@@ -46,23 +46,46 @@ class _HomeScreenState extends State<HomeScreen> {
   double height;
   double width;
   Size size;
+  String formatted;
+
   Widget userAccountsDrawerHeader(context, currentUser) {
-    return Container(
-      height: height / 3.5,
-      width: double.infinity,
+    return ClayContainer(
       color: Theme.of(context).primaryColor,
-      child: DrawerHeader(
-        child: UserAccountsDrawerHeader(
-          currentAccountPicture: CircleAvatar(
-            backgroundColor: Colors.grey,
-            backgroundImage: NetworkImage(
-              currentUser.userImage,
+      width: double.infinity,
+      depth: 40,
+      spread: 1,
+      child: Container(
+        height: height / 3.5,
+        width: double.infinity,
+        color: Theme.of(context).primaryColor,
+        child: DrawerHeader(
+          child: UserAccountsDrawerHeader(
+            currentAccountPicture: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Image.network(
+                  currentUser.userImage,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadding) {
+                    return loadding == null
+                        ? child
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          );
+                  },
+                ),
+              ),
             ),
+            accountName: Text(
+              currentUser.userFullName,
+            ),
+            accountEmail: Text(currentUser.userEmail),
           ),
-          accountName: Text(
-            currentUser.userFullName,
-          ),
-          accountEmail: Text(currentUser.userEmail),
         ),
       ),
     );
@@ -71,18 +94,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget listTile({String name, IconData iconData, Function onTap, context}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Container(
+      child: ClayContainer(
         color: Theme.of(context).primaryColor,
-        child: ListTile(
-          onTap: onTap,
-          leading: Icon(
-            iconData,
-            color: Theme.of(context).accentColor,
-          ),
-          title: Text(
-            name,
-            style: TextStyle(
+        width: double.infinity,
+        depth: 40,
+        spread: 1,
+        child: Container(
+          color: Theme.of(context).primaryColor,
+          child: ListTile(
+            onTap: onTap,
+            leading: Icon(
+              iconData,
               color: Theme.of(context).accentColor,
+            ),
+            title: Text(
+              name,
+              style: TextStyle(
+                color: Theme.of(context).accentColor,
+              ),
             ),
           ),
         ),
@@ -100,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         listTile(
             iconData: Icons.add,
-            name: 'Admin',
+            name: 'Post',
             context: context,
             onTap: () {
               Navigator.of(context).push(
@@ -161,22 +190,22 @@ class _HomeScreenState extends State<HomeScreen> {
               await FirebaseAuth.instance.signOut().whenComplete(
                     () => Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
+                        builder: (context) => SignIn(),
                       ),
                     ),
                   );
             }),
-        Consumer<MyProvider>(
-          builder: (context, notifier, child) => SwitchListTile(
-            title: notifier.darkTheme == false
-                ? Text("Dark Mode")
-                : Text("Light Mode"),
-            onChanged: (val) {
-              notifier.toggleTheme();
-            },
-            value: notifier.darkTheme,
-          ),
-        ),
+        // Consumer<MyProvider>(
+        //   builder: (context, notifier, child) => SwitchListTile(
+        //     title: notifier.darkTheme == false
+        //         ? Text("Dark Mode")
+        //         : Text("Light Mode"),
+        //     onChanged: (val) {
+        //       notifier.toggleTheme();
+        //     },
+        //     value: notifier.darkTheme,
+        //   ),
+        // ),
       ],
     );
   }
@@ -184,7 +213,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget singalCategory(
       {String categoryName,
       String name,
-      Color color,
       IconData iconData,
       bool value,
       Color iconColor}) {
@@ -194,42 +222,64 @@ class _HomeScreenState extends State<HomeScreen> {
           myCategorys.getCategoryData(category: categoryName);
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (ctx) => CategoryScreen(),
+              builder: (ctx) => CategoryScreen(formatted: formatted),
             ),
           );
         },
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            vertical: 10,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              value
-                  ? Center(
-                      child: CircleAvatar(
-                        radius: 20,
-                        backgroundColor: color,
-                        child: Image.asset('images/shoes.png'),
-                      ),
-                    )
-                  : CircleAvatar(
-                      radius: 20,
-                      backgroundColor: color,
-                      child: Icon(iconData, color: iconColor)),
-              SizedBox(
-                height: 5,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+          child: ClayContainer(
+            color: Theme.of(context).primaryColor,
+            width: double.infinity,
+            depth: 40,
+            spread: 10,
+            borderRadius: 10,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  value
+                      ? Center(
+                          child: ClayContainer(
+                            borderRadius: 20,
+                            spread: 2,
+                            color: Theme.of(context).primaryColor,
+                            emboss: true,
+                            parentColor: Theme.of(context).primaryColor,
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: Image.asset(
+                                'images/shoes.png',
+                                color: Colors.black,
+                                height: 25,
+                              ),
+                            ),
+                          ),
+                        )
+                      : ClayContainer(
+                          borderRadius: 20,
+                          spread: 1,
+                          color: Theme.of(context).primaryColor,
+                          emboss: true,
+                          child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: Icon(iconData, color: Colors.black)),
+                        ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      color: Theme.of(context).accentColor,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                name,
-                style: TextStyle(
-                  color: Theme.of(context).accentColor,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -245,32 +295,24 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               singalCategory(
                 categoryName: "MOBILE",
-                color: Color(0xff5ef2fc),
                 iconData: Icons.phone_android,
-                iconColor: Theme.of(context).accentColor,
                 name: 'Mobile',
                 value: false,
               ),
               singalCategory(
-                color: Color(0xfff4b07f),
                 categoryName: "MOTOR-CYCLE",
                 iconData: Icons.motorcycle,
-                iconColor: Theme.of(context).accentColor,
                 name: 'Motorcycle',
                 value: false,
               ),
               singalCategory(
-                color: Color(0xffd284f2),
                 iconData: Icons.pets,
-                iconColor: Theme.of(context).accentColor,
                 name: 'Animals',
                 categoryName: "ANIMALS",
                 value: false,
               ),
               singalCategory(
-                color: Color(0xff55f39f),
                 iconData: Icons.laptop_windows,
-                iconColor: Theme.of(context).accentColor,
                 name: 'Laptop',
                 categoryName: "LAPTOP",
                 value: false,
@@ -280,32 +322,24 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             children: [
               singalCategory(
-                color: Colors.red,
                 iconData: Icons.tv,
-                iconColor: Theme.of(context).accentColor,
                 name: 'Tv',
                 categoryName: "Tv",
                 value: false,
               ),
               singalCategory(
-                color: Color(0xff77bffa),
-                iconColor: Theme.of(context).accentColor,
                 name: 'Shoes',
                 categoryName: "SHOES",
                 value: true,
               ),
               singalCategory(
-                color: Colors.red,
                 iconData: Icons.time_to_leave,
-                iconColor: Theme.of(context).accentColor,
                 name: 'Car',
                 categoryName: "CAR",
                 value: false,
               ),
               singalCategory(
-                color: Colors.blue,
                 iconData: Icons.pending,
-                iconColor: Theme.of(context).accentColor,
                 name: 'Other',
                 categoryName: "OTHER",
                 value: false,
@@ -335,13 +369,13 @@ class _HomeScreenState extends State<HomeScreen> {
     myProvider.getProductData();
     myCategorys = Provider.of<CategoriesProvider>(context);
     ProfileProvider profileProvider = Provider.of<ProfileProvider>(context);
-
-    List<ProductModel> productList = myProvider.getProductList;
     UserModel currentUser = profileProvider.getUserData;
-    String formatted;
+    List<ProductModel> productList = myProvider.getProductList;
+
     return Scaffold(
       drawer: Drawer(
         child: Container(
+          color: Theme.of(context).primaryColor,
           child: ListView(
             children: [
               userAccountsDrawerHeader(context, currentUser),
@@ -378,18 +412,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 GridView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.only(top: 8),
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 5,
-                    childAspectRatio: 0.65,
-                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 0.74,
+                    crossAxisSpacing: 10,
                   ),
                   itemCount: productList.length,
                   itemBuilder: (context, index) {
-                    Timestamp timeStamp = productList[index].productTime;
-                    var nowTime = timeStamp.millisecondsSinceEpoch;
-                    formatted = formatTime(nowTime);
+                    formatted = DateFormat.yMMMd().format(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        int.parse(productList[index].productTime),
+                      ),
+                    );
                     return SingalProduct(
                       singalProductImage: productList[index].productImage,
                       singalProductName: productList[index].productName,
@@ -412,6 +448,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               productPrice: productList[index].productPrice,
                               productType: productList[index].productType,
                               productImage: productList[index].productImage,
+                              userName: productList[index].userName,
                             ),
                           ),
                         );
@@ -422,13 +459,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             )
           : Center(
-              child: Text(
-                "No Data",
-                style: TextStyle(
-                  color: Theme.of(context).accentColor,
-                  fontSize: 20,
-                ),
-              ),
+              child: CircularProgressIndicator(),
             ),
     );
   }

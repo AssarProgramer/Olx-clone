@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wapar/screens/home_screen.dart';
+import 'package:http/http.dart' as http;
 
 class AuthProdiver with ChangeNotifier {
   static Pattern pattern =
@@ -16,22 +18,16 @@ class AuthProdiver with ChangeNotifier {
 
   void checkSignUpValid({
     context,
-    var phoneNumber,
-    var fullAddress,
     var isLoadding,
     var image,
     var fullName,
     var email,
     var password,
-    var confirmPassword,
   }) {
     if (image == null &&
         fullName.text.isEmpty &&
         email.text.isEmpty &&
-        password.text.isEmpty &&
-        confirmPassword.text.isEmpty &&
-        phoneNumber.text.isEmpty &&
-        fullAddress.text.isEmpty) {
+        password.text.isEmpty) {
       showDialog(
           context: context,
           builder: (context) {
@@ -103,52 +99,33 @@ class AuthProdiver with ChangeNotifier {
               backgroundColor: Theme.of(context).errorColor,
             );
           });
-    } else if (confirmPassword.text.isEmpty) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text("ConfirmPassword  Is Empty"),
-              backgroundColor: Theme.of(context).errorColor,
-            );
-          });
-    } else if (phoneNumber.text.isEmpty) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text("phoneNumber  Is Empty"),
-              backgroundColor: Theme.of(context).errorColor,
-            );
-          });
-    } else if (phoneNumber.text.length < 11) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text("phoneNumber must be 11"),
-              backgroundColor: Theme.of(context).errorColor,
-            );
-          });
-    } else if (fullAddress.text.isEmpty) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text("fullAddress  Is Empty"),
-              backgroundColor: Theme.of(context).errorColor,
-            );
-          });
-    } else {
+    }  else {
+      //    Map<String, String> requestHeaders = {
+      //    'Content-type': 'application/json',
+      //    'Accept': 'application/json',
+      //  };
+      //   var uri = "http://192.168.1.107:3000/auth/signup";
+      //   http.post(
+      //     Uri.parse(uri),
+      //     body:json.encode({
+      //       "email": email.text,
+      //       "userName": fullName.text,
+      //       "password": password.text,
+      //       "phoneNumber": phoneNumber.text,
+      //       "address": fullAddress.text
+      //     }),
+      //     headers: requestHeaders
+      //   );
+
       checkSignUpVeryFaction(
-          confirmPassword: confirmPassword,
+          // confirmPassword: confirmPassword,
           email: email,
           context: context,
-          fullAddress: fullAddress,
+          // fullAddress: fullAddress,
           fullName: fullName,
           image: image,
           password: password,
-          phoneNumber: phoneNumber,
+          // phoneNumber: phoneNumber,
           isLoadding: isLoadding);
     }
   }
@@ -188,9 +165,9 @@ class AuthProdiver with ChangeNotifier {
           'userFullName': fullName.text,
           'userEmail': email.text,
           'userPassword': password.text,
-          'userConfirmPassword': confirmPassword.text,
-          'userPhoneNumber': phoneNumber.text,
-          'userFullAddress': fullAddress.text,
+          // 'userConfirmPassword': confirmPassword.text,
+          // 'userPhoneNumber': phoneNumber.text,
+          // 'userFullAddress': fullAddress.text,
           'userId': userCredential.user.uid
         },
       );

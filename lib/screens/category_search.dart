@@ -53,8 +53,9 @@ class CategoeySearch extends SearchDelegate<ProductModel> {
 
     return GridView.count(
         crossAxisCount: 2,
-        childAspectRatio: 0.68,
+        childAspectRatio: 0.74,
         crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
         padding: EdgeInsets.only(top: 10),
         children: categorySearch.map<Widget>(
           (e) {
@@ -95,8 +96,9 @@ class CategoeySearch extends SearchDelegate<ProductModel> {
 
     return GridView.count(
         crossAxisCount: 2,
-        childAspectRatio: 0.67,
+        childAspectRatio: 0.74,
         crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
         padding: EdgeInsets.only(top: 10),
         children: categorySearch.map<Widget>(
           (e) {
