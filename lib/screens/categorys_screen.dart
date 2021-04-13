@@ -56,13 +56,15 @@ class CategoryScreen extends StatelessWidget {
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.74,
+              mainAxisSpacing: 10,
               crossAxisSpacing: 10,
-              mainAxisExtent: 10
+            
             ),
             itemCount: categoryLists.length,
             itemBuilder: (context, index) {
            
               return SingalProduct(
+                
                 singalProductImage:
                     categoryLists[index].productImage,
                 singalProductName:
@@ -71,11 +73,14 @@ class CategoryScreen extends StatelessWidget {
                     categoryLists[index].productPrice,
                 singalProductType:
                     categoryLists[index].productType,
-                singalProductTime: formatted,
+                singalProductTime: formatted??'',
+
+
                 onTap: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => DetileScreen(
+                        userName: categoryLists[index].userName,
                         productTime: formatted.toString(),
                         productAddress:
                             categoryLists[index].productAddress,

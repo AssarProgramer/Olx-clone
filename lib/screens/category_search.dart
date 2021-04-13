@@ -69,6 +69,7 @@ class CategoeySearch extends SearchDelegate<ProductModel> {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => DetileScreen(
+                      userName: e.userName,
                       productTime: formatted,
                       productImage: e.productImage,
                       productType: e.productType,
@@ -112,6 +113,7 @@ class CategoeySearch extends SearchDelegate<ProductModel> {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => DetileScreen(
+                      userName: e.userName,
                       productTime: formatted,
                       productImage: e.productImage,
                       productType: e.productType,

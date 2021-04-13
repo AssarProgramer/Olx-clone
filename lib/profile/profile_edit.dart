@@ -46,6 +46,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // void _changePassword() async {
+  //   //Create an instance of the current user.
+  //   User user = await FirebaseAuth.instance.currentUser;
+  //   //Pass in the password to updatePassword.
+  //   // user.updateEmail('baloch@gmail.com').then((value) {}).catchError((error) {
+  //   //   print("Password can't be changed" + error.toString());
+  //   //   //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+  //   // });
+  // }
+
+  Future resetEmail({newEmail}) async {
+    var message;
+    User firebaseUser = FirebaseAuth.instance.currentUser;
+    firebaseUser
+        .updateEmail(newEmail)
+        .then(
+          (value) => message = 'Success',
+        )
+        .catchError((onError) => message = 'error');
+    return message;
+  }
+
+  Future resetPassword({newPassword}) async {
+    var message;
+    User firebaseUser = FirebaseAuth.instance.currentUser;
+    firebaseUser
+        .updatePassword(newPassword)
+        .then(
+          (value) => message = 'Success',
+        )
+        .catchError((onError) => message = 'error');
+    return message;
+  }
+
   Widget trueImage(context) {
     var alert;
     return Column(
@@ -162,7 +196,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   var profileImage;
   void initState() {
     super.initState();
-
     fullName = TextEditingController(
       text: widget.currentUser.userFullName,
     );
@@ -179,6 +212,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   checkValid(context, imageUrl) async {
     if (fullName.text.isEmpty) {
+      print('sadsa');
       showDialog(
           context: context,
           builder: (context) {
@@ -187,13 +221,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: Theme.of(context).errorColor,
             );
           });
+    } else if (email.text.isEmpty) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text("email Is Empty"),
+              backgroundColor: Theme.of(context).errorColor,
+            );
+          });
+    } else if (password.text.isEmpty) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text("password Is Empty"),
+              backgroundColor: Theme.of(context).errorColor,
+            );
+          });
     } else {
-      await profileProvider.updateProfile(
-        userfullName: fullName.text,
-        password: password.text,
-        userImage: imageUrl,
-        userEmail: email.text,
-      );
+      if (imageUrl == null) {
+        await profileProvider.updateProfile(
+          userfullName: fullName.text,
+          password: password.text,
+          userImage: widget.currentUser.userImage,
+          userEmail: email.text,
+        );
+      } else {
+        await profileProvider.updateProfile(
+          userfullName: fullName.text,
+          password: password.text,
+          userImage: imageUrl,
+          userEmail: email.text,
+        );
+      }
+      if (changeEmails != null) {
+        resetEmail(newEmail: changeEmails);
+      } else if (changepassword == null) {
+        resetPassword(newPassword: changepassword);
+      }
+
       await Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => HomeScreen(),
@@ -246,10 +313,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 name: 'Update',
                 onPressed: () async {
                   // if (imageUrl == null) {
-                    await checkValid(context, imageUrl);
+                  checkValid(context, imageUrl);
                   //   Navigator.of(context).pop();
                   // } else {
-                    Navigator.of(context).pop();
+                  // Navigator.of(context).pop();
                   // }
                 },
               ),

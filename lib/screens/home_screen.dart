@@ -1,16 +1,12 @@
 import 'package:clay_containers/clay_containers.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:time_formatter/time_formatter.dart';
 import 'package:wapar/auths/sign_in.dart';
 import 'package:wapar/post/admin_screen.dart';
-import 'package:wapar/profile/profile_screen.dart';
 import 'package:wapar/model/product_model.dart';
 import 'package:wapar/model/user_,model.dart';
-import 'package:wapar/profile/widgets/profile_edit.dart';
+import 'package:wapar/profile/profile_edit.dart';
 import 'package:wapar/provider/categories_provider/categories_provider.dart';
 import 'package:wapar/provider/product_provider/my_provider.dart';
 import 'package:wapar/provider/profile_provider/profile_provider.dart';
@@ -421,11 +417,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   itemCount: productList.length,
                   itemBuilder: (context, index) {
-                    formatted = DateFormat.yMMMd().format(
-                      DateTime.fromMillisecondsSinceEpoch(
-                        int.parse(productList[index].productTime),
-                      ),
-                    );
+                    formatted = new DateFormat('dd-MM-yyyy  hh:mm a').format(
+                        new DateTime.fromMillisecondsSinceEpoch(
+                            int.parse(productList[index].productTime) * 1000));    
+
+
+
                     return SingalProduct(
                       singalProductImage: productList[index].productImage,
                       singalProductName: productList[index].productName,

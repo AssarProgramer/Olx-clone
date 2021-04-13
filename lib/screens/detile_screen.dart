@@ -1,4 +1,5 @@
 import 'package:clay_containers/clay_containers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wapar/screens/home_screen.dart';
 
@@ -201,6 +202,7 @@ class DetileScreen extends StatelessWidget {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     size = MediaQuery.of(context).size;
+    User currentUser  = FirebaseAuth.instance.currentUser;
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -258,7 +260,7 @@ class DetileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          userName,
+                          userName == currentUser.displayName?'YOUR':userName,
                           style: TextStyle(
                               fontSize: 17, fontWeight: FontWeight.bold),
                         ),
